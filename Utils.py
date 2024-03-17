@@ -5,11 +5,13 @@ Created on Thu Feb 29 17:50:47 2024
 
 @author: michaelcauson
 """
+
+# Imports
 import pandas as pd
 import numpy as np
 from abc import ABC, abstractmethod
 
-
+# Elo class will have abstract methods to be filled by the particular rating system
 class Elo:
     
     def __init__(self,start_season,
@@ -48,6 +50,7 @@ class Elo:
         return pd.DataFrame({'Team': team_list, 'Games Played': gp_list,
                              'Elo': elo_list, 'Elo_std': elo_std_list})
     
+    # Sweeps through the current season's data with rating system
     def sweep_season(self):
         
         for i in range(len(self.season_data)):
@@ -90,21 +93,23 @@ class Elo:
             self.elo_table.iloc[home_id,3] -= self.std_reduction_factor
             self.elo_table.iloc[away_id,3] -= self.std_reduction_factor
             
-    
+    # Deals with promotion/relegation
     def season_end(self):
         data_label = self.current_season.split("_")
         pass
     
+    # Assign a win probability to home team
     @abstractmethod
-    def expected_outcome(self,elo1,elo2):
+    def expected_outcome(self,elo_home,elo_away):
         pass
     
+    # Define increment to update ratings
     @abstractmethod
     def update_elo(self,expected_outcome,true_outcome,*args):
         pass
     
 
-
+# Classic Elo rating system (Elo, 1967)
 class Classic(Elo):
     
     def expected_outcome(self,elo_home,elo_away):
@@ -114,6 +119,7 @@ class Classic(Elo):
         
         return self.K * (true_outcome - expected_outcome)
 
+# Glicko rating system (in peogress)
 class Glicko(Elo):
     
     def expected_outcome(self,elo_home,elo_away):
@@ -122,6 +128,7 @@ class Glicko(Elo):
     def update_elo(self,expected_outcome,true_outcome,std_max=None):
         pass
 
+# Bayesian perpsective to Elo rating system (Ingram, 2021)
 class Bayesian(Elo):
     
     def inv_logit(self,x):
