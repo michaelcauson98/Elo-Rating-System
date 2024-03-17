@@ -6,20 +6,24 @@ Created on Thu Feb 29 17:27:27 2024
 @author: michaelcauson
 """
 
+# Imports
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from Utils import *
 
+# Classic Elo rating system
 elo = Classic("9_10",1500,32)
 elo.sweep_season()
 chelsea_data_classic = elo.season_data[(elo.season_data['HomeTeam'] == "Chelsea")]
 
-
+# Bayesian perspective to Elo ratings
 bayes = Bayesian("9_10",1500,32,)
 bayes.sweep_season()
 chelsea_data_bayesian = bayes.season_data[(bayes.season_data['HomeTeam'] == "Chelsea")]
 
+
+# Plotting Elo time series (home games)
 plt.figure(figsize=(20,5))
 plt.plot(chelsea_data_classic['Date'],chelsea_data_classic['HomeElo'])
 plt.plot(chelsea_data_bayesian['Date'],chelsea_data_bayesian['HomeElo'])
